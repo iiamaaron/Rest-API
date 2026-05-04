@@ -35,7 +35,6 @@ class Result(db.Model):
         }
 
 
-
 with app.app_context():
     db.create_all()
 
@@ -78,3 +77,35 @@ def delete_student(student_id):
     return jsonify({"message": "Student deleted successfully"})
 
 
+@app.route("/students/<int:student_id>/results", methods=["POST"])
+def add_student_result(student_id):
+    student = Student.query.get(student_id)
+    if not student:
+        return jsonify({"error": "Student not found"}), 404
+    else:
+        data = request.get_json()
+        new_result = Result(
+            subject=data["subject"],
+            score=data["score"],
+            student_id=student.id
+        )
+
+        db.session.add(new_result)
+        db.session.commit()
+        return jsonify(new_result.to_dict()), 201
+
+
+@app.route("/students/<int:student_id>/results", methods=["GET"])
+def get_student_result(student_id):
+    student = Student.query.get(student_id)
+    if not student:
+        return jsonify({"error": "Student not found"}), 404
+    else:
+        return jsonify([result.to_dict() for result in student.results])
+
+
+
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
