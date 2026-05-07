@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import backref
 
 app = Flask(__name__)
 
@@ -85,7 +84,8 @@ def add_student_result(student_id):
     else:
         data = request.get_json()
         new_result = Result(
-            subject=data["subject"],
+            subject=
+            ["subject"],
             score=data["score"],
             student_id=student.id
         )
@@ -102,9 +102,6 @@ def get_student_result(student_id):
         return jsonify({"error": "Student not found"}), 404
     else:
         return jsonify([result.to_dict() for result in student.results])
-
-
-
 
 
 if __name__ == "__main__":
