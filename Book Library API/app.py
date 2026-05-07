@@ -108,7 +108,7 @@ def delete_book(id):
         return jsonify({"message": "Book deleted successfully"}), 200
 
 
-@app.route("/books/<int:id>/borrow", methods=["PATCH"]) #Patch ,ethod updates one specific field
+@app.route("/books/<int:id>/borrow", methods=["PATCH"]) #Patch method updates one specific field
 def borrow_book(id):
     book = Book.query.get(id)
     if not book:
