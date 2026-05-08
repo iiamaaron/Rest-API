@@ -3,19 +3,15 @@ from flask_sqlalchemy import SQLAlchemy # ORM for database management
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity  # JWT authentication manager
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
-# Initialize the Flask application
-app = Flask(__name__)
+app = Flask(__name__)# Initialize the Flask application
 
 # Configure the database URI (SQLite database stored in 'auth.db')
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///auth.db"
 # Configure the secret key for JWT (used to sign tokens)
 app.config["JWT_SECRET_KEY"] = "xheader453.payload.sign345"
 
-# Initialize the database object with the Flask app
-db = SQLAlchemy(app)
-# Initialize JWT manager with the Flask app
-jwt = JWTManager(app)
+db = SQLAlchemy(app)# Initialize the database object with the Flask app
+jwt = JWTManager(app)# Initialize JWT manager with the Flask app
 
 # Define a User model (represents a table in the database)
 class User(db.Model):
@@ -33,7 +29,7 @@ def home():
 
 @app.route("/register", methods=["POST"])
 def register():
-    data = request.get_json()
+    data = request.get_json() #Flask parses the raw JSON string into Python objects
     username = data.get("username")
     password = data.get("password")
     if not username:
@@ -42,7 +38,7 @@ def register():
         return jsonify({"error": "Password not found"}), 400
     else:
         hashed = generate_password_hash(password) # Hash the password
-        if User.query.filter_by(username=username).first():
+        if User.query.filter_by(username=username).first(): #Check if username already exists
             return jsonify({"error": "Username already exists"}), 400
         # Create new User and save
         user = User(
@@ -57,8 +53,8 @@ def register():
 
 @app.route("/login", methods=["POST"])
 def login():
+    data = request.get_json() #Flask parses the raw JSON string into Python objects
     # Get the username and password
-    data = request.get_json()
     username = data.get("username")
     password = data.get("password")
     # Validate both fields
@@ -72,7 +68,7 @@ def login():
         # If user does not exist, return an error
         if not user:
             return jsonify({"error": "User not found"}), 404
-        # Else check if password matches user password, else return error
+        # check if password matches user password, else return error
         if not check_password_hash(user.password, password):
             return jsonify({"error": "Wrong password"}), 401
         token = create_access_token(identity=str(user.id)) # Else generate JWT token
